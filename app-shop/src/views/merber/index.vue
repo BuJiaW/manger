@@ -275,7 +275,6 @@ export default {
     },
     //   查询
       async getMemberList() {
-      console.log(this.searchMember);
       const memberList = await gcy_getMember(
         this.page,
         this.pageSize,
@@ -320,7 +319,6 @@ export default {
     async handleEditMember(id) {
       const response = await gcy_findMember(id);
       const res = response.data;
-      console.log(res);
       if (response.flag) {
         this.addMemberForm = res;
       } else {
