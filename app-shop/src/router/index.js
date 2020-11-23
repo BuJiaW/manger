@@ -4,42 +4,20 @@ import Layout from '../components/Layout'
 Vue.use(VueRouter);
 const routes = [
 
-<<<<<<< HEAD
-  // 登录
-  {
-    path: '/login',
-    name: "login",
-    component: () => import("../views/login"),
-  },
-  // 首页
-  {
-    path: '/',
-    name: "Layout",
-    component: Layout,
-    redirect: '/login',
-    children: [
-      {
-        path: '/index',
-        component: () => import("../views/index"),
-      }
-    ]
-  },
-=======
     // 登录
     {
         path: '/login',
-        name: "login",
+        name: "Login",
         component: () =>
             import ("../views/login"),
->>>>>>> 383396c427c67cc7f381fc11447602969af59901
-
+          
     },
     // 首页
     {
         path: '/',
         name: "Layout",
         component: Layout,
-        redirect: '/index',
+        redirect:'/login',
         children: [{
             path: '/index',
             component: () =>
