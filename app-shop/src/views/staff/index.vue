@@ -168,25 +168,25 @@ export default {
       });
     },
     // 开启修改弹框
-    // async openEdit(id) {
-    //   this.dialogFormVisible = true;
-    //   let res = await findOne(id);
-    //   // console.log(res);
-    //   if (res.flag) {
-    //     this.form = res.data;
-    //   }
-    // },
+    async openEdit(id) {
+      this.dialogFormVisible = true;
+      let res = await findOne(id);
+      // console.log(res);
+      if (res.flag) {
+        this.form = res.data;
+      }
+    },
     // 确认 修改
-    // async handleEdit() {
-    //   let res = await updata(this.form);
-    //   // console.log(res);
-    //   if (res.flag) {
-    //     this.dialogFormVisible = false;
-    //     this.$message.success(res.message);
-    //     this.getData();
-    //     this.form = {};
-    //   }
-    // },
+    async handleEdit() {
+      let res = await updata(this.form);
+      // console.log(res);
+      if (res.flag) {
+        this.dialogFormVisible = false;
+        this.$message.success(res.message);
+        this.getData();
+        this.form = {};
+      }
+    },
     // 删除会员
     // handleDel(id) {
     //   this.$confirm("确认删除这条记录吗？", "提示", {
