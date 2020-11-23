@@ -1,6 +1,6 @@
 <template>
   <div class="index">
-      <p>奥利给</p>
+      <p>哈哈哈哈哈哈哈哈哈</p>
   </div>
 </template>
 
