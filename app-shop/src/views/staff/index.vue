@@ -188,29 +188,29 @@ export default {
       }
     },
     // 删除会员
-    // handleDel(id) {
-    //   this.$confirm("确认删除这条记录吗？", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     type: "warning"
-    //   })
-    //     .then(async () => {
-    //       let res = await del(id);
-    //       if (res.flag) {
-    //         this.$message({
-    //           type: "success",
-    //           message: "删除成功!"
-    //         });
-    //         this.getData();
-    //       }
-    //     })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: "info",
-    //         message: "已取消删除"
-    //       });
-    //     });
-    // }
+    handleDel(id) {
+      this.$confirm("确认删除这条记录吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          let res = await del(id);
+          if (res.flag) {
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.getData();
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    }
  },
  // 以下是生命周期钩子 注：没用到的钩子请自行删除
  /**
