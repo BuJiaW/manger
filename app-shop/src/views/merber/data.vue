@@ -1,4 +1,3 @@
-<!--  loves you forever -->
 <template>
   <div class="member">
     <!-- 搜索 -->
@@ -50,23 +49,35 @@
         <el-button @click="resetForm('searchMember')">重置</el-button>
       </el-form-item>
     </el-form>
+
     <!-- 数据列表 -->
     <el-table :data="tableData" height="380" border style="width: 100%">
-      <el-table-column type="index" label="序号" width="60"></el-table-column>
-      <el-table-column prop="cardNum" label="会员卡号"></el-table-column>
-      <el-table-column prop="name" label="会员姓名"></el-table-column>
-      <el-table-column prop="birthday" label="会员生日"></el-table-column>
-      <el-table-column prop="phone" label="手机号码" width="110"></el-table-column>
-      <el-table-column prop="integral" label="可用积分"></el-table-column>
-      <el-table-column prop="money" label="开卡金额"></el-table-column>
-      <el-table-column prop="payType" label="支付类型">
-        <template slot-scope="scope">{{ scope.row.payType | payTypeFilter }}</template>
+      <el-table-column type="index" label="序号" width="60"> </el-table-column>
+      <el-table-column prop="cardNum" label="会员卡号"> </el-table-column>
+      <el-table-column prop="name" label="会员姓名"> </el-table-column>
+      <el-table-column prop="birthday" label="会员生日"> </el-table-column>
+      <el-table-column prop="phone" label="手机号码" width="110">
       </el-table-column>
-      <el-table-column prop="address" label="会员地址" width="180"></el-table-column>
+      <el-table-column prop="integral" label="可用积分"> </el-table-column>
+      <el-table-column prop="money" label="开卡金额"> </el-table-column>
+      <el-table-column prop="payType" label="支付类型">
+        <template slot-scope="scope">
+          {{ scope.row.payType | payTypeFilter }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="address" label="会员地址" width="180">
+      </el-table-column>
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEditMember(scope.row.id)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDeleteMember(scope.row.id)">删除</el-button>
+          <el-button size="mini" @click="handleEditMember(scope.row.id)"
+            >编辑</el-button
+          >
+          <el-button
+            size="mini"
+            type="danger"
+            @click="handleDeleteMember(scope.row.id)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -159,34 +170,38 @@
 </template>
 
 <script>
-//这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
-//例如：import 《组件名称》 from '《组件路径》';
-import { gcy_getMember, gcy_removeMember,gcy_addMember, gcy_updateMembe ,gcy_findMember , gcy_updateMember} from "../../api/merber";
+import {
+  getMember,
+  addMember,
+  removeMember,
+  findMember,
+  updateMember
+} from "../../api/member";
+import { Prompt } from "../../utils/prompt";
+const message = new Prompt();
 const payType = [
   {
     id: 1,
-    type: "现金",
+    type: "现金"
   },
   {
     id: 2,
-    type: "微信",
+    type: "微信"
   },
   {
     id: 3,
-    type: "支付宝",
+    type: "支付宝"
   },
   {
     id: 4,
-    type: "银行卡",
-  },
+    type: "银行卡"
+  }
 ];
 export default {
-  //import引入的组件需要注入到对象中才能使用
-  components: {},
+  name: "",
   data() {
-    //这里存放数据
     return {
-     memberTitle: {
+      memberTitle: {
         add: "会员新增",
         edit: "会员编辑"
       },
@@ -218,83 +233,78 @@ export default {
       tableData: []
     };
   },
-  //监听属性 类似于data概念 计算属性
-  computed: {},
-  //监控data中的数据变化
-  watch: {},
-  //方法集合
+  created() {
+    //调用获取会员列表接口
+    this.getMemberList();
+  },
   methods: {
-      submitMemberForm(formName) {
+    //显示新增会员弹窗方法
+    handleAdd() {
+      this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["addMemberForm"].resetFields();
+        // console.log(this.$refs["addMemberForm"])
+      });
+    },
+    //新增功能
+    submitMemberForm(formName) {
+      console.log("新增会员");
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          const response = await gcy_addMember(this.addMemberForm);
+          const response = await addMember(this.addMemberForm);
           const res = response.data;
-          if (response.flag) {
-           this.gcy_List();
-            this.$message.success(response.message);
+          if (res.flag) {
+            this.getMemberList();
           } else {
             message.PromptMessage("添加会员失败", "error");
           }
           this.dialogFormVisible = false;
         }
       });
-      },
-    //   条数
-      changePageSize(val){
-       this.pageSize = val;
-       //重新获取数据
-       this.gcy_List();
-      },
-    //   页数   
-     changePage(val){
-      this.page = val;
-      //重新获取数据
-    this.gcy_List();
-      },
-    //   新增
-      handleAdd(){
-  this.dialogFormVisible = true;
-      this.$nextTick(() => {
-        this.$refs["addMemberForm"].resetFields();
-     
-      });
-      },
-       //编辑会员方法
-    async editMemberForm() {
-      const response = await gcy_updateMember(
-        this.addMemberForm.id,
-        this.addMemberForm
-      );
-      const res = response.data;
-      if (response.flag) {
-      this.gcy_List();
-      } else {
-        // message.PromptMessage("更新会员数据失败", "error");
-      }
-      this.dialogFormVisible = false;
     },
-    //   查询
-      async getMemberList() {
+    //改变页码方法
+    changePage(value) {
+      this.page = value;
+      //重新获取数据
+      this.getMemberList();
+    },
+    //改变条数方法
+    changePageSize(value) {
+      this.pageSize = value;
+      //重新获取数据
+      this.getMemberList();
+    },
+    
+    //获取会员列表接口
+    async getMemberList() {
       console.log(this.searchMember);
-      const memberList = await gcy_getMember(
+      const memberList = await getMember(
         this.page,
         this.pageSize,
         this.searchMember
       );
-          const res = memberList.data;
-      if (memberList.flag) {
-        this.tableData = res.rows;
-        this.total = memberList.data.total;
+      const res = memberList.data;
+      console.log(res);
+      if (res.flag) {
+        this.tableData = res.data.rows;
+        this.total = res.data.total;
       } else {
         message.PromptMessage("获取会员列表失败", "error");
       }
     },
-    async gcy_List() {
-      let res = await gcy_getMember();
-      this.tableData = res.data.rows;
-      this.total = res.data.total;
+    //编辑会员方法
+    async handleEditMember(id) {
+      const response = await findMember(id);
+      const res = response.data;
+      if (res.flag) {
+        this.addMemberForm = res.data;
+        console.log(this.addMemberForm);
+      } else {
+        message.PromptMessage("查看当前会员数据失败", "error");
+      }
+      this.dialogFormVisible = true;
     },
-        //删除会员方法
+    //删除会员方法
      handleDeleteMember(id) {
       this.$confirm("确认删除这条记录吗？?", "提示", {
         confirmButtonText: "确定",
@@ -302,11 +312,11 @@ export default {
         type: "warning"
       })
         .then(async() => {
-          const response =await gcy_removeMember(id);
+          const response =await removeMember(id);
           const res = response.data;
-          if(response.flag){
-            this.$message.success("删除成功")
-           this.gcy_List();
+          if(res.flag){
+            message.PromptMessage("删除成功","success")
+            this.getMemberList();
           }else{
             message.PromptMessage("删除会员数据失败", "error");
           }
@@ -316,38 +326,36 @@ export default {
         });
       
     },
- //编辑会员方法
-    async handleEditMember(id) {
-      const response = await gcy_findMember(id);
+    //更新会员方法
+    async editMemberForm() {
+      const response = await updateMember(
+        this.addMemberForm.id,
+        this.addMemberForm
+      );
       const res = response.data;
-      console.log(res);
-      if (response.flag) {
-        this.addMemberForm = res;
+      if (res.flag) {
+        this.getMemberList();
       } else {
-        message.PromptMessage("查看当前会员数据失败", "error");
+        message.PromptMessage("更新会员数据失败", "error");
       }
-      this.dialogFormVisible = true;
+      this.dialogFormVisible = false;
     },
-     //重置表单方法
+    //重置表单方法
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }
   },
-     filters: {
-      payTypeFilter(num) {
-        return payType.find((item) => item.id == num).type;
-      },
-    },
-  //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
-  //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-    this.gcy_List();
+  filters: {
+    payTypeFilter(num) {
+      return payType.find(item => item.id == num).type;
+    }
   },
+  components: {}
 };
 </script>
-<style lang='scss' scoped>
-//@import url(); 引入公共css类
+
+
+<style scoped>
 .el-form {
   margin-top: 20px;
 }
