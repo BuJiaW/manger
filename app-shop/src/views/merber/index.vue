@@ -1,83 +1,355 @@
+<!--  loves you forever -->
 <template>
-<div>
-    会员
-</div>
+  <div class="member">
+    <!-- 搜索 -->
+    <el-form
+      :inline="true"
+      :model="searchMember"
+      ref="searchMember"
+      class="demo-form-inline"
+    >
+      <el-form-item prop="cardNum">
+        <el-input
+          v-model="searchMember.cardNum"
+          placeholder="会员卡号"
+          style="width:200px"
+        ></el-input>
+      </el-form-item>
+      <el-form-item prop="name">
+        <el-input
+          v-model="searchMember.name"
+          placeholder="会员姓名"
+          style="width:200px"
+        ></el-input>
+      </el-form-item>
+      <el-form-item prop="payType">
+        <el-select
+          v-model="searchMember.payType"
+          placeholder="支付类型"
+          style="width:110px"
+        >
+          <el-option
+            v-for="item in payType"
+            :key="item.id"
+            :label="item.type"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="birthday">
+        <el-date-picker
+          value-format="yyyy-MM-dd"
+          type="date"
+          placeholder="选择日期"
+          v-model="searchMember.birthday"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="getMemberList">查询</el-button>
+        <el-button type="primary" @click="handleAdd">新增</el-button>
+        <el-button @click="resetForm('searchMember')">重置</el-button>
+      </el-form-item>
+    </el-form>
+    <!-- 数据列表 -->
+    <el-table :data="tableData" height="380" border style="width: 100%">
+      <el-table-column type="index" label="序号" width="60"></el-table-column>
+      <el-table-column prop="cardNum" label="会员卡号"></el-table-column>
+      <el-table-column prop="name" label="会员姓名"></el-table-column>
+      <el-table-column prop="birthday" label="会员生日"></el-table-column>
+      <el-table-column prop="phone" label="手机号码" width="110"></el-table-column>
+      <el-table-column prop="integral" label="可用积分"></el-table-column>
+      <el-table-column prop="money" label="开卡金额"></el-table-column>
+      <el-table-column prop="payType" label="支付类型">
+        <template slot-scope="scope">{{ scope.row.payType | payTypeFilter }}</template>
+      </el-table-column>
+      <el-table-column prop="address" label="会员地址" width="180"></el-table-column>
+      <el-table-column label="操作" width="150">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleEditMember(scope.row.id)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDeleteMember(scope.row.id)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页 -->
+    <el-pagination
+      @size-change="changePageSize"
+      @current-change="changePage"
+      :current-page="page"
+      :page-sizes="[10, 20]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+    >
+    </el-pagination>
+
+    <!-- 新增会员 -->
+    <el-dialog
+      :title="addMemberForm.id ? memberTitle.edit : memberTitle.add"
+      width="500px"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        ref="addMemberForm"
+        :rules="rules"
+        status-icon
+        label-width="100px"
+        style="width:400px"
+        label-position="right"
+        :model="addMemberForm"
+      >
+        <el-form-item label="会员卡号" prop="cardNum">
+          <el-input
+            v-model="addMemberForm.cardNum"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="会员姓名" prop="name">
+          <el-input v-model="addMemberForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="会员生日" prop="birthday">
+          <el-date-picker
+            value-format="yyyy-MM-dd"
+            v-model="addMemberForm.birthday"
+            type="date"
+            placeholder="会员生日"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="手机号" prop="phone">
+          <el-input v-model="addMemberForm.phone" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="开卡金额" prop="money">
+          <el-input v-model="addMemberForm.money" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="可用积分" prop="integral">
+          <el-input
+            v-model="addMemberForm.integral"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="支付类型" prop="payType">
+          <el-select v-model="addMemberForm.payType" placeholder="支付类型">
+            <el-option
+              v-for="item in payType"
+              :key="item.id"
+              :label="item.type"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="会员地址" prop="address">
+          <el-input type="textarea" v-model="addMemberForm.address"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="
+            addMemberForm.id
+              ? editMemberForm('addMemberForm')
+              : submitMemberForm('addMemberForm')
+          "
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
+//这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
+//例如：import 《组件名称》 from '《组件路径》';
+import { gcy_getMember, gcy_removeMember,gcy_addMember, gcy_updateMembe ,gcy_findMember , gcy_updateMember} from "../../api/merber";
+const payType = [
+  {
+    id: 1,
+    type: "现金",
+  },
+  {
+    id: 2,
+    type: "微信",
+  },
+  {
+    id: 3,
+    type: "支付宝",
+  },
+  {
+    id: 4,
+    type: "银行卡",
+  },
+];
 export default {
- // 组件参数 接收来自父组件的数据
- props: [],
- // 局部注册的组件
- components: {},
- // 组件状态值
- data () {
- return {}
- },
- // 计算属性
- computed: {},
- // 侦听器
- watch: {},
- // 组件方法
- methods: {},
- // 以下是生命周期钩子 注：没用到的钩子请自行删除
- /**
- * 在实例初始化之后，组件属性计算之前，如data属性等
- */
- beforeCreate () {
- },
- /**
- * 组件实例创建完成，属性已绑定，但DOM还未生成，$ el属性还不存在
- */
- created () {
- },
- /**
- * 在挂载开始之前被调用：相关的 render 函数首次被调用。
- */
- beforeMount () {
- },
- /**
- * el 被新创建的 vm.$ el 替换，并挂载到实例上去之后调用该钩子。
- * 如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$ el 也在文档内。
- */
- mounted () {
- },
- /**
- * 数据更新时调用，发生在虚拟 DOM 重新渲染和打补丁之前。
- * 你可以在这个钩子中进一步地更改状态，这不会触发附加的重渲染过程。
- */
- beforeUpdate () {
- },
- /**
- * 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。
- * 当这个钩子被调用时，组件 DOM 已经更新，所以你现在可以执行依赖于 DOM 的操作。
- */
- updated () {
- },
- /**
- * keep-alive 组件激活时调用。 仅针对keep-alive 组件有效
- */
- activated () {
- },
- /**
- * keep-alive 组件停用时调用。 仅针对keep-alive 组件有效
- */
- deactivated () {
- },
- /**
- * 实例销毁之前调用。在这一步，实例仍然完全可用。
- */
- beforeDestroy () {
- },
- /**
- * Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，
- * 所有的事件监听器会被移除，所有的子实例也会被销毁。
- */
- destroyed () {
- }
+  //import引入的组件需要注入到对象中才能使用
+  components: {},
+  data() {
+    //这里存放数据
+    return {
+     memberTitle: {
+        add: "会员新增",
+        edit: "会员编辑"
+      },
+      addMemberForm: {
+        cardNum: "",
+        name: "",
+        phone: "",
+        birthday: "",
+        payType: "",
+        money: 0,
+        integral: 0,
+        address: ""
+      },
+      rules: {
+        cardNum: [
+          { required: true, message: "请输入会员卡号", trigger: "blur" }
+        ],
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        payType: [
+          { required: true, message: "请选择支付类型", trigger: "change" }
+        ]
+      },
+      dialogFormVisible: false,
+      payType: payType,
+      total: 0,
+      page: 1,
+      pageSize: 10,
+      searchMember: {},
+      tableData: []
+    };
+  },
+  //监听属性 类似于data概念 计算属性
+  computed: {},
+  //监控data中的数据变化
+  watch: {},
+  //方法集合
+  methods: {
+      submitMemberForm(formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          const response = await gcy_addMember(this.addMemberForm);
+          const res = response.data;
+          if (response.flag) {
+           this.gcy_List();
+            this.$message.success(response.message);
+          } else {
+            message.PromptMessage("添加会员失败", "error");
+          }
+          this.dialogFormVisible = false;
+        }
+      });
+      },
+    //   条数
+      changePageSize(val){
+       this.pageSize = val;
+       //重新获取数据
+       this.gcy_List();
+      },
+    //   页数   
+     changePage(val){
+      this.page = val;
+      //重新获取数据
+    this.gcy_List();
+      },
+    //   新增
+      handleAdd(){
+  this.dialogFormVisible = true;
+      this.$nextTick(() => {
+        this.$refs["addMemberForm"].resetFields();
+     
+      });
+      },
+       //编辑会员方法
+    async editMemberForm() {
+      const response = await gcy_updateMember(
+        this.addMemberForm.id,
+        this.addMemberForm
+      );
+      const res = response.data;
+      if (response.flag) {
+      this.gcy_List();
+      } else {
+        // message.PromptMessage("更新会员数据失败", "error");
+      }
+      this.dialogFormVisible = false;
+    },
+    //   查询
+      async getMemberList() {
+      const memberList = await gcy_getMember(
+        this.page,
+        this.pageSize,
+        this.searchMember
+      );
+          const res = memberList.data;
+      if (memberList.flag) {
+        this.tableData = res.rows;
+        this.total = memberList.data.total;
+      } else {
+        message.PromptMessage("获取会员列表失败", "error");
+      }
+    },
+    async gcy_List() {
+      let res = await gcy_getMember();
+      this.tableData = res.data.rows;
+      this.total = res.data.total;
+    },
+        //删除会员方法
+     handleDeleteMember(id) {
+      this.$confirm("确认删除这条记录吗？?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async() => {
+          const response =await gcy_removeMember(id);
+          const res = response.data;
+          if(response.flag){
+            this.$message.success("删除成功")
+           this.gcy_List();
+          }else{
+            message.PromptMessage("删除会员数据失败", "error");
+          }
+        })
+        .catch(() => {
+          message.PromptMessage("取消删除","info")
+        });
+      
+    },
+ //编辑会员方法
+    async handleEditMember(id) {
+      const response = await gcy_findMember(id);
+      const res = response.data;
+      if (response.flag) {
+        this.addMemberForm = res;
+      } else {
+        message.PromptMessage("查看当前会员数据失败", "error");
+      }
+      this.dialogFormVisible = true;
+    },
+     //重置表单方法
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    }
+  },
+     filters: {
+      payTypeFilter(num) {
+        return payType.find((item) => item.id == num).type;
+      },
+    },
+  //生命周期 - 创建完成（可以访问当前this实例）
+  created() {},
+  //生命周期 - 挂载完成（可以访问DOM元素）
+  mounted() {
+    this.gcy_List();
+  },
+};
+</script>
+<style lang='scss' scoped>
+//@import url(); 引入公共css类
+.el-form {
+  margin-top: 20px;
 }
-</script> 
-
-<style scoped>
-
+.el-pagination {
+  margin-top: 10px;
+}
 </style>
