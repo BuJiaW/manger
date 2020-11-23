@@ -289,7 +289,7 @@ export default {
       }
     },
     async gcy_List() {
-      let res = await gcy_getMember();
+      let res = await gcy_getMember(this.pageSize,this.page,this.addMemberForm);
       this.tableData = res.data.rows;
       this.total = res.data.total;
     },
