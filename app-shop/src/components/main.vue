@@ -1,8 +1,5 @@
 <template>
   <el-main>
-    <router-view>
-
-    </router-view>
     <bread v-if="$route.path != '/index'"></bread>
     <router-view></router-view>
   </el-main>

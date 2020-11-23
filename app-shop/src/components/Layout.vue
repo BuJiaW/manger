@@ -6,16 +6,21 @@
           <img src="http://mengxuegu.com:9999/img/logo.7156be27.png" alt />
           <p>梦雪谷会员系统</p>
         </div>
-        <el-dropdown>
-          <span>
-            <!-- {{ $store.getters.info.name}} -->
+        <el-dropdown class="aa" @command="handleCommand">
+          <!-- 随机用户名 -->
+          <span class="qw">
+            {{" 卢军"}}
+            <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item icon="el-icon-edit">修改密码</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-s-fold" command="logout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
         </el-dropdown>
       </el-header>
       <el-container>
         <asides />
         <mains />
-        
       </el-container>
     </el-container>
   </div>
@@ -24,13 +29,21 @@
 <script>
 import Asides from "./aside";
 import Mains from "./main";
+// import { updatePassword } from "../../api/password";
 export default {
-  // 组件参数 接收来自父组件的数据
   props: [],
-  // 局部注册的组件
   components: { Asides, Mains },
-  // 组件状态值
   data() {
+    // const oldPass = async (rule, value, callback)=>{
+      // const userId = this.$store.getters.info.id;
+      // const response = await checkPassword(userId,this.oldPass);
+      // const res = response.data;
+      // if(res.flag){
+      //   callback();
+      // }else{
+      //   callback(new Error("原密码不正确"))
+      // }
+    // };
     return {};
   },
   // 计算属性
@@ -39,7 +52,28 @@ export default {
   watch: {},
   // 组件方法
   methods: {
-  
+    handleCommand(command) {
+      switch (command) {
+        case "change-pass":
+          this.showPassDialog();
+          break;
+        case "logout":
+          this.logout();
+          break;
+      }
+    },
+    //退出登录的方法
+    async logout() {
+      const res = await this.$store.dispatch("UserLogout");
+      if (res.flag) {
+        //回到登录页面
+         console.log(res)
+        this.$router.push("/login");
+      } else {
+        message.PromptMessage("登录失败", "error");
+      }
+      
+    }
   },
   // 以下是生命周期钩子 注：没用到的钩子请自行删除
   /**
@@ -95,6 +129,12 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: #fff;
+}
+.aa {
+  color: #fff;
+}
+.qw {
   color: #fff;
 }
 img {
