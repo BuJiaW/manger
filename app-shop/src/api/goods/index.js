@@ -7,4 +7,26 @@ export function getGoods(data,size,limit){
 
     })
 }
+//删除
+export function del(id){
+    return Server({
+        url:`/goods/${id}`,
+        method:'delete',
+        data:{
+            id,
+        }
+    })
+}
+//添加
+
+export function add(id){
+    return Server({
+        url:`/goods/${id}`,
+        method:'put',
+        data:{
+            id,
+        }
+    })
+}
+
 

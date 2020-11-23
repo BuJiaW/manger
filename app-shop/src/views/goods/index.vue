@@ -15,7 +15,7 @@
         <el-form-item>
           <el-button type="primary" @click="onSearch">查询</el-button>
           <el-button type="primary" @click="onAdd">新增</el-button>
-          <el-button @click="onReset">重置</el-button>
+          <el-button @click="form={}">重置</el-button>
         </el-form-item>
       </el-form>
       <!-- 表格区域 -->
@@ -25,7 +25,7 @@
             <el-table-column prop="id" label="序号"> </el-table-column>
             <el-table-column prop="name" label="商品名称"> </el-table-column>
             <el-table-column prop="code" label="商品编码"> </el-table-column>
-            <el-table-column prop="spec" label="商品编码"> </el-table-column>
+            <el-table-column prop="spec" label="商品规格"> </el-table-column>
             <el-table-column prop="purchasePrice" label="零售价">
             </el-table-column>
             <el-table-column prop="retailPrice" label="进货价">
@@ -34,10 +34,20 @@
             </el-table-column>
             <el-table-column prop="supplierName" label="供应商">
             </el-table-column>
+
+            <el-table-column label="操作" width="150px">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="exit(scope.row)">编辑</el-button>
+                <el-button size="mini" type="danger" @click="del(scope.row.id)"
+                  >删除</el-button
+                >
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </div>
     </div>
+    <!-- 分页器 -->
     <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
@@ -46,15 +56,59 @@
         :page-sizes="[10, 20, 30]"
         :page-size="limit"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
+        :total="total"
       >
       </el-pagination>
     </div>
+
+    <!-- 编辑弹出框 -->
+    <el-dialog title="编辑商品" :visible.sync="dialogFormVisible" width="500px">
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="商品名称" prop="goodsname">
+          <el-input v-model="ruleForm.goodsname"></el-input>
+        </el-form-item>
+
+        <el-form-item label="商品编码" prop="goodsnum">
+          <el-input v-model="ruleForm.goodsnum"></el-input>
+        </el-form-item>
+
+        <el-form-item label="商品规格">
+          <el-input v-model="ruleForm.goodsspec"></el-input>
+        </el-form-item>
+
+        <el-form-item label="零售价" prop="goodspurchasePrice">
+          <el-input v-model="ruleForm.goodspurchasePrice"></el-input>
+        </el-form-item>
+
+        <el-form-item label="进货价">
+          <el-input v-model="ruleForm.goodsretailPrice"></el-input>
+        </el-form-item>
+
+        <el-form-item label="库存数量">
+          <el-input v-model="ruleForm.goodsstorageNum"></el-input>
+        </el-form-item>
+
+        <el-form-item label="供应商">
+          <el-input v-model="ruleForm.goodssupplierName"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="exitsure">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getGoods } from "../../api/goods/index";
+import { getGoods,del,add } from "../../api/goods/index";
 export default {
   // 组件参数 接收来自父组件的数据
   props: [],
@@ -64,15 +118,37 @@ export default {
   data() {
     return {
       goodslist: [],
+      total: 0,
+      dialogFormVisible: false,
+      formLabelWidth: "120px",
       form: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: "",
+        goodsname: "",
+        goodsnum: "",
+        goodsmer: "",
+      },
+      ruleForm: {
+        goodsname: "", //商品名称
+        goodsnum: "", //商品编码
+        goodspurchasePrice: "", //零售价
+        goodsspec: "", //规格
+        goodsretailPrice: "", //进货价
+        goodsstorageNum: "", //库存数量
+        goodssupplierName: "", //供应商
+        ruleId: "",
+      },
+      rules: {
+        goodsname: [
+          { required: true, message: "请输入商品名称", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+        ],
+        goodsnum: [
+          { required: true, message: "请输入商品编码", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+        ],
+        goodspurchasePrice: [
+          { required: true, message: "请输入商品零售价", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+        ],
       },
       keyword: {
         code: "",
@@ -90,25 +166,83 @@ export default {
   // 组件方法
   methods: {
     //一级查询
-    onSearch() {},
+    onSearch() {
+      this.changeLimit()
+      this.form.goodsname="";
+      this.form.goodsnum="";
+      this.form.goodsmer="";
+      this.$message.success("查询成功！")
+    },
     //添加
     onAdd() {},
     //重置
     onReset() {},
+    //刷新数据
     changeLimit() {
       getGoods(this.keyword, this.size, this.limit).then((res) => {
         this.goodslist = res.data.rows;
-        console.log(this.goodslist);
+        this.total = res.data.total;
+        // console.log(res)
       });
     },
+    //每页条数
     handleSizeChange(i) {
       this.limit = i;
-      this.changeLimit()
+      this.changeLimit();
     },
-    handleCurrentChange(i){
-      this.size=i;
-      this.changeLimit()
-    }
+    //页码数分页
+    handleCurrentChange(i) {
+      this.size = i;
+      this.changeLimit();
+    },
+    //编辑
+    exit(row) {
+      console.log(row);
+      this.dialogFormVisible = true;
+      this.ruleForm.goodsname = row.name;
+      this.ruleForm.goodsnum = row.code;
+      this.ruleForm.goodspurchasePrice = row.purchasePrice;
+      this.ruleForm.goodsspec = row.spec;
+      this.ruleForm.goodsretailPrice = row.retailPrice;
+      this.ruleForm.goodsstorageNum = row.storageNum;
+      this.ruleForm.goodssupplierName = row.supplierName;
+      this.ruleForm.ruleId = row.supplierID;
+    },
+    //编辑确定
+    async exitsure(id) {
+      
+      let res= await add(id)
+      console.log(res)
+      if(res.code==2000){
+        this.$message.success(res.message)
+        this.dialogFormVisible = false;
+        this.changeLimit();
+      }
+      
+    },
+    //删除
+    async del(id) {
+      let res= await del(id)
+      console.log(res)
+      if(res.code==2000){
+        this.$message.success(res.message)
+        this.changeLimit()
+      }
+      
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert("submit!");
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
   },
   // 以下是生命周期钩子 注：没用到的钩子请自行删除
   /**
@@ -128,7 +262,7 @@ export default {
    * 如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$ el 也在文档内。
    */
   mounted() {
-    this.changeLimit()
+    this.changeLimit();
   },
   /**
    * 数据更新时调用，发生在虚拟 DOM 重新渲染和打补丁之前。
