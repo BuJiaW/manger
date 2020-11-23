@@ -8,16 +8,48 @@
       <el-table-column align="center" prop="remark" label="备注"></el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" @click="handleEdit(scope.row.id)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <el-pagination
+      @size-change="changeSize"
+      @current-change="changePage"
+      :current-page="page"
+      :page-sizes="[10,20,30]"
+      :page-size="limit"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+    ></el-pagination>
+
+    <!-- 编辑 -->
+    <el-dialog title="供应商编辑" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="供应商名称" label-width="100px">
+          <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人" label-width="100px">
+          <el-input v-model="form.linkman"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话" label-width="100px"> 
+          <el-input v-model="form.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="备注" label-width="100px">
+          <el-input v-model="form.remark"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="bjw_Sure">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { bjw_getList } from "../../api/supplier/index";
+import { bjw_getList, bjw_Delete, bjw_Update,bjw_Edit } from "../../api/supplier/index";
 export default {
   // 组件参数 接收来自父组件的数据
   props: [],
@@ -29,7 +61,11 @@ export default {
       tableData: [],
       total: 0,
       page: 1,
-      limit: 10
+      limit: 10,
+
+      // 编辑
+      dialogFormVisible:false,
+      form:{},
     };
   },
   // 计算属性
@@ -41,16 +77,45 @@ export default {
     // 渲染接口
     async bjw_List() {
       let res = await bjw_getList(this.page, this.limit);
-      console.log(res);
       this.tableData = res.data.rows;
+      this.total = res.data.total;
     },
     // 修改
-    handleEdit(){
-
+    async handleEdit() {
+      this.dialogFormVisible = true
+      let res = await bjw_Update()
+      this.form = res.data
+    },
+    async bjw_Sure(id){
+      let res = await bjw_Edit(id)
+      if(res.code == 2000){
+        this.$message.success(res.message)
+        this.bjw_List()
+        this.dialogFormVisible = false
+      }else{
+        this.$message.error(res.message)
+      }
     },
     // 删除
-    handleDelete(){
-      
+    async handleDelete(id) {
+      let res = await bjw_Delete(id);
+      console.log(res);
+      if (res.code == 2000) {
+        this.$message.success("删除成功");
+        this.bjw_List();
+      } else {
+        this.$message.success("删除失败");
+      }
+    },
+
+    // 分页
+    changeSize(page) {
+      this.limit = page;
+      this.bjw_List();
+    },
+    changePage(page) {
+      this.page = page;
+      this.bjw_List();
     }
   },
   // 以下是生命周期钩子 注：没用到的钩子请自行删除
@@ -104,4 +169,7 @@ export default {
 </script> 
 
 <style scoped>
+.el-pagination {
+  margin-top: 20px;
+}
 </style>
