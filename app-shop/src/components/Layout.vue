@@ -6,10 +6,16 @@
           <img src="http://mengxuegu.com:9999/img/logo.7156be27.png" alt />
           <p>梦雪谷会员系统</p>
         </div>
+        <el-dropdown>
+          <span>
+            <!-- {{ $store.getters.info.name}} -->
+          </span>
+        </el-dropdown>
       </el-header>
       <el-container>
         <asides />
         <mains />
+        
       </el-container>
     </el-container>
   </div>

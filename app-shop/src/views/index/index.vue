@@ -72,7 +72,7 @@ export default {
 .index{
   margin: 0 auto;
   p{
-    
+
     text-align: center;
     font-size: 44px;
     font-weight: bold;
