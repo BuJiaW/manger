@@ -246,6 +246,6 @@ export default {
 
 <style scoped>
 .el-pagination {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 </style>
