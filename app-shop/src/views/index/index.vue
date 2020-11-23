@@ -1,6 +1,6 @@
 <template>
   <div class="index">
-      <p>奥利给</p>
+      <h1>欢迎访问梦学谷管理系统</h1>
   </div>
 </template>
 
@@ -69,14 +69,8 @@ export default {
 </script> 
 
 <style lang="scss" scoped>
-.index{
-  margin: 0 auto;
-  p{
-    
-    text-align: center;
-    font-size: 44px;
-    font-weight: bold;
-    
-  }
+h1 {
+  text-align: center;
+  font-size: 28px;
 }
 </style>
