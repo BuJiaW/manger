@@ -4,25 +4,25 @@
       <el-header>
         <div>
           <img src="http://mengxuegu.com:9999/img/logo.7156be27.png" alt />
-          <p>梦雪谷会员系统</p> 
+          <p>梦雪谷会员系统</p>
         </div>
       </el-header>
       <el-container>
-        <asides/>
-        <mains/>
+        <asides />
+        <mains />
       </el-container>
     </el-container>
   </div>
 </template>
 
 <script>
-import Asides from './aside'
-import Mains from './main'
+import Asides from "./aside";
+import Mains from "./main";
 export default {
   // 组件参数 接收来自父组件的数据
   props: [],
   // 局部注册的组件
-  components: {Asides,Mains},
+  components: { Asides, Mains },
   // 组件状态值
   data() {
     return {};
@@ -32,7 +32,9 @@ export default {
   // 侦听器
   watch: {},
   // 组件方法
-  methods: {},
+  methods: {
+  
+  },
   // 以下是生命周期钩子 注：没用到的钩子请自行删除
   /**
    * 在实例初始化之后，组件属性计算之前，如data属性等
@@ -97,13 +99,13 @@ img {
   align-items: center;
 }
 p {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 .el-aside {
-    background: #373d41;
-    min-height: 800px;
+  background: #373d41;
+  min-height: 500px;
 }
 .el-menu {
-    border:none;
+  border: none;
 }
 </style>

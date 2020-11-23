@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="200px">
+  <el-aside width="200px" id="aside">
     <el-menu
       default-active="2"
       class="el-menu-vertical-demo"
@@ -40,15 +40,20 @@ export default {
   components: {},
   // 组件状态值
   data() {
-    return {
-    };
+    return {};
   },
   // 计算属性
   computed: {},
   // 侦听器
   watch: {},
   // 组件方法
-  methods: {},
+  methods: {
+    setAside() {
+      let html = document.documentElement || document.body;
+      let height = html.clientHeight - 60;
+      aside.style.height = height + "px";
+    }
+  },
   // 以下是生命周期钩子 注：没用到的钩子请自行删除
   /**
    * 在实例初始化之后，组件属性计算之前，如data属性等
@@ -66,7 +71,9 @@ export default {
    * el 被新创建的 vm.$ el 替换，并挂载到实例上去之后调用该钩子。
    * 如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$ el 也在文档内。
    */
-  mounted() {},
+  mounted() {
+      this.setAside();
+  },
   /**
    * 数据更新时调用，发生在虚拟 DOM 重新渲染和打补丁之前。
    * 你可以在这个钩子中进一步地更改状态，这不会触发附加的重渲染过程。
