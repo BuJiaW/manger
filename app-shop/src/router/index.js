@@ -1,9 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Layout from '../components/Layout'
-
 Vue.use(VueRouter);
-
 const routes = [
 
   // 登录
@@ -17,7 +15,7 @@ const routes = [
     path: '/',
     name: "Layout",
     component: Layout,
-    redirect: '/index',
+    redirect: '/login',
     children: [
       {
         path: '/index',
