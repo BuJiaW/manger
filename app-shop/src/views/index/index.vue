@@ -1,6 +1,6 @@
 <template>
   <div class="index">
-      <p>奥利给</p>
+      <p>呵呵呵呵呵呵呵呵呵呵</p>
   </div>
 </template>
 
@@ -72,7 +72,7 @@ export default {
 .index{
   margin: 0 auto;
   p{
-    
+
     text-align: center;
     font-size: 44px;
     font-weight: bold;
