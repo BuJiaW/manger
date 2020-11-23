@@ -14,3 +14,6 @@ export function setUserToken(token){
 export function getUserInfo(){
     return JSON.parse(localStorage.getItem(INFO_KEY))
 }
+export function setUserInfo(info){
+    localStorage.setItem(INFO_KEY,info);
+}
