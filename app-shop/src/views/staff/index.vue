@@ -150,23 +150,23 @@ export default {
       this.getData();
     },
     // 确认 添加
-    // handleAdd(formName) {
-    //   this.$refs[formName].validate(async valid => {
-    //     if (valid) {
-    //       let res = await add(this.form);
-    //       // console.log(res);
-    //       if (res.flag) {
-    //         this.dialogFormVisible = false;
-    //         this.$message.success(res.message);
-    //         this.getData();
-    //         this.form = {};
-    //       }
-    //     } else {
-    //       console.log("error submit!!");
-    //       return false;
-    //     }
-    //   });
-    // },
+    handleAdd(formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          let res = await add(this.form);
+          // console.log(res);
+          if (res.flag) {
+            this.dialogFormVisible = false;
+            this.$message.success(res.message);
+            this.getData();
+            this.form = {};
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
     // 开启修改弹框
     // async openEdit(id) {
     //   this.dialogFormVisible = true;
