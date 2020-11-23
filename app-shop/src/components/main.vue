@@ -1,27 +1,17 @@
 <template>
   <el-main>
-<<<<<<< HEAD
-<<<<<<< HEAD
-    
-    <router-view>
-
-    </router-view>
-=======
-=======
->>>>>>> 383396c427c67cc7f381fc11447602969af59901
     <bread v-if="$route.path != '/index'"></bread>
     <router-view></router-view>
->>>>>>> 383396c427c67cc7f381fc11447602969af59901
   </el-main>
 </template>
 
 <script>
-import bread from '../components/bread'
+import bread from "../components/bread";
 export default {
   // 组件参数 接收来自父组件的数据
   props: [],
   // 局部注册的组件
-  components: {bread},
+  components: { bread },
   // 组件状态值
   data() {
     return {};
@@ -76,7 +66,7 @@ export default {
    * Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，
    * 所有的事件监听器会被移除，所有的子实例也会被销毁。
    */
-  destroyed() {}
+  destroyed() {},
 };
 </script> 
 
