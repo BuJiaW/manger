@@ -13,16 +13,13 @@ router.beforeEach((to, from, next) => {
             next();
         }
     } else { //有token (登录了)
-        const userInfo = store.state.info;
-        // 再判获取到用户信息了没
-        if (!userInfo) {
-            next('/login')
-        } else {
-            if (to.path == '/login') {
-                next(from.path);
-            } else {
-                next();
-            }
-        }
+       if(to.path == '/login'){
+           next('/index')
+       }else{
+           next()
+       }
+            
+       
     }
+    // next()
 })
