@@ -1,15 +1,17 @@
 <template>
   <el-main>
+    <bread v-if="$route.path != '/index'"></bread>
     <router-view></router-view>
   </el-main>
 </template>
 
 <script>
+import bread from '../components/bread'
 export default {
   // 组件参数 接收来自父组件的数据
   props: [],
   // 局部注册的组件
-  components: {},
+  components: {bread},
   // 组件状态值
   data() {
     return {};
