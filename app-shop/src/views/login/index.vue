@@ -1,83 +1,81 @@
 <template>
-<div>
-    登录
-</div>
+  <div class="login-wrapper">
+  <div class="login-center">
+    <h2 class="login-title">梦学谷会员管理系统</h2>
+    <el-form ref="loginForm" :model="form" :rules="rules" label-width="80px">
+      <el-form-item label="账号" prop="username">
+     <el-input v-model.trim="form.username"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+     <el-input v-model.trim="form.password"></el-input>
+      </el-form-item>
+      <el-form-item label="账号" prop="username">
+    <el-button type="primary" @click="tologin('loginForm')">登录</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+  </div>
 </template>
 
 <script>
 export default {
- // 组件参数 接收来自父组件的数据
- props: [],
- // 局部注册的组件
- components: {},
- // 组件状态值
- data () {
- return {}
- },
- // 计算属性
- computed: {},
- // 侦听器
- watch: {},
- // 组件方法
- methods: {},
- // 以下是生命周期钩子 注：没用到的钩子请自行删除
- /**
- * 在实例初始化之后，组件属性计算之前，如data属性等
- */
- beforeCreate () {
- },
- /**
- * 组件实例创建完成，属性已绑定，但DOM还未生成，$ el属性还不存在
- */
- created () {
- },
- /**
- * 在挂载开始之前被调用：相关的 render 函数首次被调用。
- */
- beforeMount () {
- },
- /**
- * el 被新创建的 vm.$ el 替换，并挂载到实例上去之后调用该钩子。
- * 如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$ el 也在文档内。
- */
- mounted () {
- },
- /**
- * 数据更新时调用，发生在虚拟 DOM 重新渲染和打补丁之前。
- * 你可以在这个钩子中进一步地更改状态，这不会触发附加的重渲染过程。
- */
- beforeUpdate () {
- },
- /**
- * 由于数据更改导致的虚拟 DOM 重新渲染和打补丁，在这之后会调用该钩子。
- * 当这个钩子被调用时，组件 DOM 已经更新，所以你现在可以执行依赖于 DOM 的操作。
- */
- updated () {
- },
- /**
- * keep-alive 组件激活时调用。 仅针对keep-alive 组件有效
- */
- activated () {
- },
- /**
- * keep-alive 组件停用时调用。 仅针对keep-alive 组件有效
- */
- deactivated () {
- },
- /**
- * 实例销毁之前调用。在这一步，实例仍然完全可用。
- */
- beforeDestroy () {
- },
- /**
- * Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，
- * 所有的事件监听器会被移除，所有的子实例也会被销毁。
- */
- destroyed () {
- }
-}
-</script> 
+  name: '',
+props:{},
+  data() {
+    return {
+      form:{
+        username:"",
+        password:""
+      },
+       rules: {
+        username: [
+          { required: true, message: "请输入账号", trigger: "blur" },
+          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" }
+        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+      }
+    };
+  },
+components: {
+},
+  computed:{
+   
+  },
+  methods: {
+     tologin(formName){
+    this.$refs[formName].validate((valid)=>{
+      if(valid){
+        this.$message.success('登陆成功')
+        this.$router.push("./index")
+      }
+      else{
+        this.$message.error('登录失败，请重新登录')
+        return false;
+      }
+    });
+    }
+  },
+};
+</script>
 
 <style scoped>
-
+.login-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: url("http://mengxuegu.com:9999/img/login.b665435f.jpg") no-repeat;
+}
+.login-center {
+  width: 350px;
+  background: rgba(235, 232, 243, 0.8);
+  margin: 160px auto;
+  padding: 28px;
+  border-radius: 20px;
+}
+.login-title {
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+  margin: 20px 0;
+}
 </style>
