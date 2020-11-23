@@ -9,7 +9,7 @@
       <el-form-item label="密码" prop="password">
      <el-input v-model.trim="form.password"></el-input>
       </el-form-item>
-      <el-form-item label="账号" prop="username">
+      <el-form-item >
     <el-button type="primary" @click="tologin('loginForm')">登录</el-button>
       </el-form-item>
     </el-form>
