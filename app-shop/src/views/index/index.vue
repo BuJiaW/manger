@@ -1,6 +1,6 @@
 <template>
-  <div>
-      首页
+  <div class="index">
+      <p>奥利给</p>
   </div>
 </template>
 
@@ -68,5 +68,15 @@ export default {
 };
 </script> 
 
-<style scoped>
+<style lang="scss" scoped>
+.index{
+  margin: 0 auto;
+  p{
+    
+    text-align: center;
+    font-size: 44px;
+    font-weight: bold;
+    
+  }
+}
 </style>

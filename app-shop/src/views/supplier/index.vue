@@ -1,10 +1,23 @@
 <template>
-  <div>
-      供应商
+  <div class="app-container">
+    <el-table :data="tableData" height="350" border style="width: 100%">
+      <el-table-column align="center" type="index" label="序号" width="180"></el-table-column>
+      <el-table-column align="center" prop="name" label="供应商名称"></el-table-column>
+      <el-table-column align="center" prop="linkman" label="联系人"></el-table-column>
+      <el-table-column align="center" prop="mobile" label="联系电话"></el-table-column>
+      <el-table-column align="center" prop="remark" label="备注"></el-table-column>
+      <el-table-column align="center" label="操作">
+        <template slot-scope="scope">
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
+import { bjw_getList } from "../../api/supplier/index";
 export default {
   // 组件参数 接收来自父组件的数据
   props: [],
@@ -12,14 +25,34 @@ export default {
   components: {},
   // 组件状态值
   data() {
-    return {};
+    return {
+      tableData: [],
+      total: 0,
+      page: 1,
+      limit: 10
+    };
   },
   // 计算属性
   computed: {},
   // 侦听器
   watch: {},
   // 组件方法
-  methods: {},
+  methods: {
+    // 渲染接口
+    async bjw_List() {
+      let res = await bjw_getList(this.page, this.limit);
+      console.log(res);
+      this.tableData = res.data.rows;
+    },
+    // 修改
+    handleEdit(){
+
+    },
+    // 删除
+    handleDelete(){
+      
+    }
+  },
   // 以下是生命周期钩子 注：没用到的钩子请自行删除
   /**
    * 在实例初始化之后，组件属性计算之前，如data属性等
@@ -37,7 +70,9 @@ export default {
    * el 被新创建的 vm.$ el 替换，并挂载到实例上去之后调用该钩子。
    * 如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$ el 也在文档内。
    */
-  mounted() {},
+  mounted() {
+    this.bjw_List();
+  },
   /**
    * 数据更新时调用，发生在虚拟 DOM 重新渲染和打补丁之前。
    * 你可以在这个钩子中进一步地更改状态，这不会触发附加的重渲染过程。
