@@ -8,7 +8,7 @@ router.beforeEach((to, from, next) => {
     if (!token) {
         // 再判断 如果所处的路由不是登录页的话就跳转到登录页
         if (to.path != '/login') {
-            next('login');
+            next('/login');
         } else {
             next();
         }
