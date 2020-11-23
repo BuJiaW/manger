@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import {login,getInfo,logout} from "../api/login"
+import {SET_TOKEN,SET_INFO} from "./type/type-mutations"
 import {getUserToken,getUserInfo,setUserToken,setUserInfo} from "../utils/auth"
 Vue.use(Vuex);
 
@@ -34,6 +35,7 @@ export default new Vuex.Store({
         login(form.username.trim(),form.password.trim()).then(res=>{
         if(res.flag){
           //获取token
+          console.log(res)
           const token =res.data.token;
           resolve(res);
           commit("SET_TOKEN",token)

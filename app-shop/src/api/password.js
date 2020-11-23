@@ -1,7 +1,7 @@
-// import request from '../utils/request'
+// import Server from '../utils/request'
 // //验证原密码的接口
 // export function checkPassword(id, oldPass) {
-//     return request({
+//     return  Server({
 //         url: "/user/pwd",
 //         method: "POST",
 //         data: {
@@ -10,9 +10,9 @@
 //         }
 //     })
 // }
-//修改密码接口
+// 修改密码接口
 // export function updatePassword(id, newPass) {
-//     return request({
+//     return  Server({
 //         url: "/user/pwd",
 //         method: "PUT",
 //         data: {

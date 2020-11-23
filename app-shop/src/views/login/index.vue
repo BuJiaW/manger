@@ -39,20 +39,36 @@ props:{},
 components: {
 },
   computed:{
-   
+    // const res = await this.$store.dispatch("UserLogout");
+    //   if (res.flag) {
+    //     //回到登录页面
+    //      console.log(res)
+    //     this.$router.push("/login");
+    //   } else {
+    //     message.PromptMessage("登录失败", "error");
+    //   }
   },
   methods: {
-     tologin(formName){
-    this.$refs[formName].validate((valid)=>{
-      if(valid){
-        this.$message.success('登陆成功')
-        this.$router.push("./index")
+     async tologin(){
+        const res = await this.$store.dispatch("UserLogin",this.form)
+         if (res.flag) {
+        //回到登录页面
+         console.log(res)
+        this.$router.push("/index");
+      } else {
+        message.PromptMessage("登录失败", "error");
       }
-      else{
-        this.$message.error('登录失败，请重新登录')
-        return false;
-      }
-    });
+    // this.$refs[formName].validate((valid)=>{
+    //   if(valid){
+    //     this.$message.success('登陆成功')
+    //     this.$router.push("/index")
+    //     this.dispath.
+    //   }
+    //   else{
+    //     this.$message.error('登录失败，请重新登录')
+    //     return false;
+    //   }
+    // });
     }
   },
 };
