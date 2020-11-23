@@ -1,17 +1,10 @@
 <template>
   <el-main>
-<<<<<<< HEAD
-<<<<<<< HEAD
-    
     <router-view>
 
     </router-view>
-=======
-=======
->>>>>>> 383396c427c67cc7f381fc11447602969af59901
     <bread v-if="$route.path != '/index'"></bread>
     <router-view></router-view>
->>>>>>> 383396c427c67cc7f381fc11447602969af59901
   </el-main>
 </template>
 
